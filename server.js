@@ -38,37 +38,13 @@ function initialPrompt(){
                 case 'add a role':
                     addRole();
                     break;
+                case 'add an employee':
+                    addEmployee();
+                    break;
 
             }
         })
    };
-/*
-const questions = [
-    {
-        type: 'list',
-        name: 'options',
-        message: 'what would you like to do?',
-        choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 
-        'add a role', 'add an employee', 'update an employee role']
-    } , 
-    {
-        type: 'list',
-        name: 'departments',
-        message: 'view all departments',
-        choices: ['1', '2', '3'],
-        when: (answers) => answers.options === 'view all departments'
-    }
-    .then viewDepartments(),
-    
-    {
-        type: 'list',
-        name: 'roles',
-        message: 'view all roles',
-        choices: ['1', '2', '3'],
-        when: (answers) => answers.options === 'view all roles'
-    },
-]
-*/
 
 function viewDepartments() {
     const query = `SELECT * FROM department`;
@@ -137,19 +113,43 @@ function addRole(){
         }, (err)=>{
             if(err) throw err;
             initialPrompt();
-        })
+        });
+    });  
+};
+
+function addEmployee(){
+   inquirer.prompt([
+    {
+        type: 'input',
+        name: 'first_name',
+        message: 'What is employees first name'
+   },
+   {
+    type: 'input',
+    name: 'last_name',
+    message: 'What is employees last name'
+   },
+   {
+    type: 'input',
+    name: 'role_id',
+    message: 'What is employees role id'
+   },
+   {
+    type: 'input',
+    name: 'manager_id',
+    message: 'what is employees manager id'
+   }
+]) .then((answers) => {
+    db.query('INSERT INTO employee SET ?', {
+        first_name: answers.first_name,
+        last_name: answers.last_name,
+        role_id: answers.role_id,
+        manager_id: answers.manager_id
+    }, (err) => {
+        if(err) throw(err);
+        initialPrompt();
     })
-    
+})
 }
-
-
-
-
-/*
-function init() {
-    inquirer.prompt(questions);
-}
-init();
-*/
 
 initialPrompt();
