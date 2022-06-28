@@ -32,6 +32,12 @@ function initialPrompt(){
                 case 'view all employees':
                     viewEmployees();
                     break;
+                case 'add a department':
+                    addDepartment();
+                    break;
+                case 'add a role':
+                    addRole();
+                    break;
 
             }
         })
@@ -70,6 +76,7 @@ function viewDepartments() {
         if(err) throw err;
 
         console.table(data);
+        initialPrompt();
     })
     };
 
@@ -78,6 +85,7 @@ function viewRoles() {
     db.query(query, (err, data) => {
         if(err) throw err;
         console.table(data);
+        initialPrompt();
     })
 };
 
@@ -86,8 +94,57 @@ function viewEmployees() {
     db.query(query, (err, data) => {
         if(err) throw err;
         console.table(data);
+        initialPrompt();
     })
+};
+
+function addDepartment() {
+    inquirer.prompt({
+        type: 'input',
+        name: 'deptName',
+        message: 'What is the name of the department'
+    })
+    .then((answer) => {
+      var query = `INSERT INTO department (name) VALUES (?)`;
+      db.query(query, answer.deptName, (err, data) => {
+        if(err) throw err;
+        initialPrompt();
+      });
+    });
+};
+
+function addRole(){
+    inquirer.prompt([{
+        type: 'input',
+        name: 'title',
+        message: 'What is the name of the role'
+    },
+    {
+        type: 'input',
+        name: 'salary',
+        message: 'What is the salary of the role'
+    },
+    {
+        type: 'input',
+        name: 'department_id',
+        message: 'What is the department id of this role'
+    }])
+    . then((answers) => {
+        db.query('INSERT INTO role SET ?', {
+            title: answers.title,
+            salary: answers.salary,
+            department_id: answers.department_id
+        }, (err)=>{
+            if(err) throw err;
+            initialPrompt();
+        })
+    })
+    
 }
+
+
+
+
 /*
 function init() {
     inquirer.prompt(questions);
