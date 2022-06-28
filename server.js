@@ -1,5 +1,6 @@
 const express = require('express');
 const inquirer =require('inquirer');
+const cTable = require('console.table');
 const db = require('./db/connection');
 
 const questions = [
