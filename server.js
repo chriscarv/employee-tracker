@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 db.connect(err => {
     if (err) throw err;
     console.log('Database connected');
-
+    initialPrompt();
 });
 
 function initialPrompt(){
@@ -19,7 +19,7 @@ function initialPrompt(){
         name: 'options',
         message: 'what would you like to do?',
         choices: ['view all departments', 'view all roles', 'view all employees', 'add a department', 
-        'add a role', 'add an employee', 'update an employee role']   
+        'add a role', 'add an employee', 'update an employee role', 'exit']   
         } )
         .then(function ({ options }) {
             switch(options) {
@@ -44,6 +44,8 @@ function initialPrompt(){
                 case 'update an employee role':
                     updateRole();
                     break;
+                case 'exit':
+                    db.end();       
 
             }
         })
@@ -176,7 +178,7 @@ function updateRole(){
         inquirer.prompt([
             {
                 type: 'list',
-                name: 'first_name',
+                name: 'employee_id',
                 message: 'choose employee to update',
                 choices: employees
             },
@@ -198,4 +200,5 @@ function updateRole(){
     });
     });
 };
-initialPrompt();
+
+
