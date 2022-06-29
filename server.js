@@ -41,6 +41,9 @@ function initialPrompt(){
                 case 'add an employee':
                     addEmployee();
                     break;
+                case 'update an employee role':
+                    updateRole();
+                    break;
 
             }
         })
@@ -148,8 +151,51 @@ function addEmployee(){
     }, (err) => {
         if(err) throw(err);
         initialPrompt();
-    })
-})
-}
+    });
+});
+};
 
+
+function updateRole(){
+    db.query('SELECT * FROM employee', (err, data) =>{
+        if(err) throw err;
+
+        var employees = [];
+        var roles = [];
+
+        for(var i = 0; i < data.length; i++){
+            employees.push(data[i].first_name)
+        }
+
+    db.query('SELECT * FROM role', (err, data) => {
+        if(err) throw(err);
+
+        for(var i =0; i < data.length; i++){
+            roles.push(data[i].title)
+        }
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'first_name',
+                message: 'choose employee to update',
+                choices: employees
+            },
+            {
+                type: 'list',
+                name: 'role_id',
+                message: 'choose role',
+                choices: roles
+            }
+        ])
+        .then (function({ employee_id, role_id }){
+            db.query(`UPDATE employee SET role_id = ${roles.indexOf(role_id) +1} WHERE id = ${employees.indexOf(employee_id) +1}`,
+            (err) => {
+                if(err) throw(err);
+                initialPrompt();
+            }
+            )
+        })
+    });
+    });
+};
 initialPrompt();
